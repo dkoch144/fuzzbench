@@ -1,0 +1,62 @@
+ARG parent_image
+FROM $parent_image as deps
+
+RUN  apt-get update \
+     && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends --fix-missing \
+       ca-certificates \
+       curl \
+       gdb \
+       git \
+       gnupg \
+       lsb-core \
+       lsb-release \
+       zip
+
+RUN lsb_release -a | grep -q "18.04" && ( \
+      echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-12 main" >> /etc/apt/sources.list && \
+      curl -L https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+    ) || \
+    (lsb_release -a | grep -q "20.04") || \
+    (lsb_release -a | grep -q "22.04") || (echo "Ubuntu 18.04, 20.04, or 22.04 required!!!" >&2; exit 1)
+
+RUN  apt-get update \
+     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --fix-missing \
+       graphviz \
+       doxygen \
+       libcurl4-openssl-dev \
+       python3-dev \
+       python3-pip \
+       python3-setuptools \
+       build-essential \
+       cmake
+
+# ENV  LLVM_CONFIG=llvm-config-12
+# RUN set -ex \
+#     && cd `$LLVM_CONFIG --bindir` \
+#     && for f in *; do rm -f /usr/bin/$f; ln -s ../lib/llvm-12/bin/$f /usr/bin/$f; done \
+#     && set +ex
+
+FROM deps AS aflpp
+
+# Clone and build AFL++
+RUN set -ex \
+  && cd /usr/local/src \
+  && git clone --depth 1 -b v4.30c https://github.com/AFLplusplus/AFLplusplus.git \
+  && cd AFLplusplus \
+  && make all \
+  && make install \
+  && set +ex
+
+FROM aflpp AS vmf
+
+# Clone, build, install VMF
+RUN set -ex \
+    && mkdir vmf \
+    && git clone --depth 1 https://github.com/draperlaboratory/vadermodularfuzzer.git vmf \
+    && cd /vmf \
+    && mkdir -p build \
+    && cd build \
+    && cmake .. \
+    && make -j \
+    && make install \
+    && set +ex
