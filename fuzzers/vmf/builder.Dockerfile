@@ -45,6 +45,7 @@ RUN set -ex \
   && cd AFLplusplus \
   && make all \
   && make install \
+  && cp utils/aflpp_driver/libAFLDriver.a / \
   && set +ex
 
 FROM aflpp AS vmf

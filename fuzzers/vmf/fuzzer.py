@@ -13,7 +13,7 @@ def build():  # pylint: disable=too-many-branches,too-many-statements
     os.environ["CC"] = "/usr/bin/afl-clang-fast"
     os.environ["CXX"] = "/usr/bin/afl-clang-fast++"
 
-    os.environ["FUZZER_LIB"] = "/libStandaloneFuzzTarget.a"
+    os.environ["FUZZER_LIB"] = "/libAFLDriver.a"
 
     # os.environ["AFL_QUIET"] = "1"
     # os.environ["AFL_MAP_SIZE"] = "2621440"
