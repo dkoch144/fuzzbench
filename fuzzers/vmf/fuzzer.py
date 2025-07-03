@@ -10,8 +10,8 @@ def build():  # pylint: disable=too-many-branches,too-many-statements
     """Build benchmark."""
     build_directory = os.environ["OUT"]
 
-    os.environ["CC"] = "/usr/bin/afl-clang-fast"
-    os.environ["CXX"] = "/usr/bin/afl-clang-fast++"
+    os.environ["CC"] = "/AFLplusplus/afl-clang-fast"
+    os.environ["CXX"] = "/AFLplusplus/afl-clang-fast++"
 
     os.environ["FUZZER_LIB"] = "/libAFLDriver.a"
 
@@ -28,7 +28,7 @@ def build():  # pylint: disable=too-many-branches,too-many-statements
         utils.build_benchmark()
 
     shutil.copytree(
-        "/vadermodularfuzzer/build/vmf_install/",
+        "/vmf/build/vmf_install/",
         f"{build_directory}/vmf_install/")
 
 def remove_zero_byte_files(directory_path):
