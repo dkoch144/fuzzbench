@@ -66,7 +66,7 @@ def get_stats(output_corpus, fuzzer_log):  # pylint: disable=unused-argument
 def prepare_fuzz_environment(input_corpus):
     """Prepare to fuzz with AFL or another AFL-based fuzzer."""
     # Tell AFL to not use its terminal UI so we get usable logs.
-    os.environ['AFL_NO_UI'] = '1'
+    #os.environ['AFL_NO_UI'] = '1'
     # Skip AFL's CPU frequency check (fails on Docker).
     os.environ['AFL_SKIP_CPUFREQ'] = '1'
     # No need to bind affinity to one core, Docker enforces 1 core usage.

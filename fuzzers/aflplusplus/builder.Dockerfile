@@ -43,6 +43,7 @@ RUN git clone -b dev https://github.com/AFLplusplus/AFLplusplus /afl && \
 # Build without Python support as we don't need it.
 # Set AFL_NO_X86 to skip flaky tests.
 RUN cd /afl && \
+    sed -i '/afl->not_on_tty/s/^/\/\/ /' src/afl-fuzz-init.c && \
     unset CFLAGS CXXFLAGS && \
     export CC=clang AFL_NO_X86=1 && \
     PYTHON_INCLUDE=/ make && \
